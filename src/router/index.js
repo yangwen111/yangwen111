@@ -4,10 +4,12 @@ import VueRouter from 'vue-router'
 import login from '../views/login'
 import bookList from "@/views/bookList";
 import edit from "@/views/edit";
+
 //使用插件
 Vue.use(VueRouter)
 //配置路由
 export default new VueRouter({
+    //设置插件
     mode:"history",//去掉路由中的#
     routes: [
         {

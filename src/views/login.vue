@@ -52,6 +52,8 @@ export default {
             .then(res => {
               // console.log("输出response.data.status", res.data.status);
               if (res.data.code === "000") {
+                 //设置到store中
+                 this.$store.commit("settoken",res.data.result.token);
                  this.$router.push({"name":"booklist",params:{
                       user:this.user
                    }});

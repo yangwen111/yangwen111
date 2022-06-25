@@ -4,6 +4,7 @@ import axios from "axios";
 import nprogress from 'nprogress';
 //引入进度条样式
 import "nprogress/nprogress.css";
+import store from "@/store"
 console.log(nprogress)
 //创建实例
 const requests=axios.create({
@@ -16,13 +17,15 @@ const requests=axios.create({
 requests.interceptors.request.use((config)=>{
     nprogress.start();
     //config对象包含一个headers
+    //设置token
+    config.headers["token"]=store.getters.gettoken
     return config;
 })
 //响应拦截器
 requests.interceptors.response.use((res)=>{
 //    成功回调函数
     nprogress.done();
-    return res.data;
+    return res;
 },(error => {
     console.log(error)
     return Promise.reject(new Error("faile"));
