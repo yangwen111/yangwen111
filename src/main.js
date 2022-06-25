@@ -8,7 +8,7 @@ import store from "@/store"
 Vue.config.productionTip = false
 Vue.use(ElementUI);
 //全局挂载
-// Vue.prototype.$axios=axios;
+Vue.prototype.$axios=axios;
 new Vue({
   store,
   axios,

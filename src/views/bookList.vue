@@ -7,8 +7,14 @@
         <h2>书籍清单</h2>
       </el-header>
       <el-main>
+        <div style="position:relative;margin-left: 575px;margin-bottom: 10px">
+<!--          添加书籍-->
+          <el-button style="position:absolute;right:560px;bottom: -2px;height:33px " @click="addBook">添加书籍</el-button>
+<!--          搜索框-->
+          <search @getname="getsearchname"></search>
+        </div>
         <el-table
-            :data="tableData"
+            :data="searcdata"
             border
             style="width: 80%">
           <el-table-column
@@ -29,7 +35,7 @@
           <el-table-column label="操作">
             <template slot-scope="scope">
               <el-button type="primary" @click="del(scope.row.id)">删除</el-button>
-              <el-button type="success" @click="editBook(scope.row.id)">编辑</el-button>
+              <el-button type="success" @click="editBook(scope.row)">编辑</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -37,58 +43,97 @@
     </el-container>
 <!--    :后面的值为props中的元素-->
     <div v-if="dialogshow">
-    <editBookDialog :id="bookid" :count="count" :dialogshow="dialogshow"></editBookDialog>
+<!--      方法必须放在前面-->
+    <editBookDialog @flushbook="getflush" :flag="flag" :data="book" :dialogshow="dialogshow"></editBookDialog>
     </div>
   </div>
 </template>
 <script>
 import {bookList} from "@/api";
 import editBookDialog from "@/views/editBookDialog";
+import search from "@/views/search";
 export default {
   name: "bookList",
   components:{
-    editBookDialog
+    editBookDialog,
+    search
   },
   data(){
     return{
       tableData:[],
+      searcdata:[],
       dialogshow:false,
-      bookid:''
+      book:'',
+      flashflag:true,
+      bookname:'',
+      flag:1
     }
   },
   methods:{
+    addBook(){
+      this.flag=2;
+      this.dialogshow=!this.dialogshow;
+    },
+    getsearchname(bookname){
+      this.bookname=bookname;
+      this.searcdata=[]
+       if(this.bookname==''){
+         this.searcdata.push(...this.tableData);
+       }else{
+          this.tableData.forEach(item=>{
+             //查询的方法
+             if(item.name.search(this.bookname)!=-1){
+                 this.searcdata.push(item);
+             }
+          })
+       }
+    },
+    getflush(){
+      this.flashflag=!this.flashflag;
+    },
     getBookList(){
+      this.tableData=[]
       bookList().then(res=>{
           let data=res.data;
           if(data.code==="000"){
               //简写方式
               this.tableData.push(...data.result);
+              this.searcdata=[]
+              this.searcdata.push(...data.result);
           }
       })
     },
     del(index){
       const that=this;
       that.tableData=[];
-      this.$axios.delete("/book/delBook/"+index).then((response)=>{
+      that.searcdata=[];
+      this.$axios.delete("library/book/delBook/"+index).then((response)=>{
         console.log(index);
         console.log(response.data.result);
         response.data.result.forEach(item=>{
           that.tableData.push(item);
+          that.searcdata.push(item);
         })
       })
     },
-    editBook(id){
+    editBook(data){
           //这里如果名字为edit则会出错
           // this.$router.push({name:"editbook",params:{
           //     data:data
           // }})
+      this.flag=1;
       this.dialogshow=!this.dialogshow;
-      this.bookid=id;
+      //数据类型随便变
+      this.book=data;
     },
   },
   created(){
     this.getBookList();
-
+  },
+  watch:{
+    flashflag(){
+      this.getBookList();
+     }
   }
 }
 </script>
@@ -103,8 +148,8 @@ export default {
   color: #333;
   text-align: center;
   padding-left: 15%;
-  height: 700px;
   /*傻逼属性被继承，会导致标题很高*/
   /*line-height: 160px;*/
 }
+
 </style>

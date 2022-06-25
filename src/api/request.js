@@ -10,6 +10,8 @@ const requests=axios.create({
     baseURL:"/library",
     timeout:5000,
 });
+//无效
+// requests.defaults.headers.post['Content-Type']='application/json;charset=UTF-8';
 //请求拦截器
 requests.interceptors.request.use((config)=>{
     nprogress.start();

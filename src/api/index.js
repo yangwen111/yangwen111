@@ -14,3 +14,13 @@ const BASE_URL="/library";
 export const bookList=()=>axios({url:BASE_URL+"/book/bookList",method:"get"});
 export const login =(username,password)=>axios({url:BASE_URL+"/user/login",method:"post",data:{username:username,password:password}})
 export const oneBook=(id)=>axios({url:BASE_URL+"/book/oneBook/"+id,method:"get"});
+export const changeBook=(book)=>axios({url:BASE_URL+"/book/changeBook",method:"post",
+    headers: {
+        'Content-Type': 'application/json;charset=UTF-8'
+    },
+    data:book});
+export const addBook=(book)=>axios({url:BASE_URL+"/book/addBook",method:"post",
+    headers: {
+        'Content-Type': 'application/json;charset=UTF-8'
+    },
+    data:book});

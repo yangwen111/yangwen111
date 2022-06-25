@@ -1,4 +1,5 @@
 <template>
+<!--  :visible.sync 同步双向绑定-->
   <el-dialog :visible.sync="dialogformvisible" :close-on-click-modal="false" :show-close="false">
     <div slot="title" class="header-title">
       <span style="font-size:18px;color:#333333;">书籍信息</span>
@@ -24,19 +25,25 @@
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button @click="cancelFun">取 消</el-button>
-      <el-button type="primary" @click="onSubmit">确 定</el-button>
+      <el-button v-show="flag==1" type="primary" @click="editbook">确 定</el-button>
+      <el-button v-show="flag==2" type="primary" @click="addbook">添 加</el-button>
     </div>
   </el-dialog>
 
 </template>
 <script>
 import {oneBook} from "@/api";
+import {changeBook} from "@/api";
+import {addBook} from "@/api";
 export default {
   name: "editBookDialog",
-  props:['count',"dialogshow","id"],
+  props:['count',"dialogshow","data","flag"],
 data () {
   return {
-    dialogformvisible: this.dialogshow,
+    flushflag:false,
+    //这里如果是false则显示不出对话框
+    dialogformvisible: true ,
+    //flag==1则是编辑，flag==2则是添加
     form: {
       name: '',
       price:''
@@ -47,7 +54,7 @@ data () {
 methods: {
    // 想要渲染数据，失败
   handerlData(){
-    let id=this.id;
+    let id=this.data.id;
     oneBook(id).then(res=>{
       let data=res.data;
       if(data.code==="000"){
@@ -55,7 +62,15 @@ methods: {
         this.form=r;
       }
     })
-    console.log("对话框的数据"+this.form.name)
+  },
+  changeBook(book){
+    book=JSON.stringify(book);
+    changeBook(book).then(res=>{
+       if(res.data.code=="000"){
+          this.$emit('flushbook')
+         console.log("返回数据成功")
+       }
+    })
   },
   // 关闭弹框的事件
   closeDialog()
@@ -72,15 +87,29 @@ methods: {
   }
 ,
   // 点击确定事件
-  onSubmit()
+  editbook()
   {
     if (this.form.name === '') {
       this.commonTip('请输入分类名称')
       return false
     }
     this.dialogformvisible = false
+    // eslint-disable-next-line vue/no-mutating-props
+    this.data.name=this.form.name;
+    // eslint-disable-next-line vue/no-mutating-props
+    this.data.price=this.form.price;
     // 这里写你确定之后的事件
+    this.changeBook(this.data);
   },
+  addbook(){
+      addBook(this.form).then(res=>{
+        if(res.data.code=="000"){
+          console.log("添加成功")
+          this.dialogformvisible=false;
+          this.$emit('flushbook')
+        }
+      })
+  }
 },
   watch:{
     // 'dialogshow':{
@@ -91,7 +120,7 @@ methods: {
     //检测父元素中属性变化，刷新到子组件中
     dialogshow(){
         this.dialogformvisible=true;
-        // this.handerlData();
+        alert("改变")
       },
     // form(nval,oval){
     //   this.form=nval;
@@ -99,7 +128,8 @@ methods: {
     // }
   },
   created() {
-    // 不起作用
+    // 不起作用:原因在于v-if,让组件重新加载
+    if(this.flag==1)
     this.handerlData()
   }
 }
