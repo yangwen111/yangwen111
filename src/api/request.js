@@ -28,7 +28,7 @@ requests.interceptors.response.use((res)=>{
     return res;
 },(error => {
     console.log(error)
-    return Promise.reject(new Error("faile"));
+    return Promise.reject(new Error("fail"));
 }))
 //对外暴露 这里axios就是错的
 export default requests;

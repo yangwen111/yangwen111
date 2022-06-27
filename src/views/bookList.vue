@@ -49,7 +49,7 @@
   </div>
 </template>
 <script>
-import {bookList} from "@/api";
+import {bookList,delBook} from "@/api";
 import editBookDialog from "@/views/editBookDialog";
 import search from "@/views/search";
 export default {
@@ -107,9 +107,7 @@ export default {
       const that=this;
       that.tableData=[];
       that.searcdata=[];
-      this.$axios.delete("library/book/delBook/"+index).then((response)=>{
-        console.log(index);
-        console.log(response.data.result);
+      delBook(index).then((response)=>{
         response.data.result.forEach(item=>{
           that.tableData.push(item);
           that.searcdata.push(item);

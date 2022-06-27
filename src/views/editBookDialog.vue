@@ -120,7 +120,6 @@ methods: {
     //检测父元素中属性变化，刷新到子组件中
     dialogshow(){
         this.dialogformvisible=true;
-        alert("改变")
       },
     // form(nval,oval){
     //   this.form=nval;

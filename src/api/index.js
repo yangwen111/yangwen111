@@ -13,6 +13,7 @@ import requests from "@/api/request";
 export const bookList=()=>requests({url:"/book/bookList",method:"get"});
 export const login =(username,password)=>requests({url:"/user/login",method:"post",data:{username:username,password:password}})
 export const oneBook=(id)=>requests({url:"/book/oneBook/"+id,method:"get"});
+export const delBook=(id)=>requests({url:"/book/delBook/"+id,method:"delete"});
 export const changeBook=(book)=>requests({url:"/book/changeBook",method:"post",
     headers: {
         'Content-Type': 'application/json;charset=UTF-8'
