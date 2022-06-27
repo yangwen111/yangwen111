@@ -1,7 +1,7 @@
 <template>
   <div>
 <!--    获取数据-->
-    <h1>欢迎您：{{$route.params.user.username}}</h1>
+    <h1>欢迎您：{{$store.getters.getusername}}</h1>
     <el-container>
       <el-header>
         <h2>书籍清单</h2>

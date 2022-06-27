@@ -11,14 +11,19 @@ export default new Vuex.Store({
     plugins:[createPersistedState()],
     //数据 不提供外部访问
     state:{
-        token:''
+        token:'',
+        username:''
     },
     //操作state的数据 这里改变了其他都改变
     mutations:{
          settoken(state,token){
              state.token=token;
              window.localStorage.setItem("token",token);
-         }
+         },
+        setusername(state,username){
+            state.username=username;
+            window.localStorage.setItem("username",username);
+        }
     },
     actions:{},
     getters:{
@@ -27,6 +32,12 @@ export default new Vuex.Store({
                 return state.token;
             }
             return window.localStorage.getItem("token")
+        },
+        getusername:function (state){
+            if(state.username) {
+                return state.username;
+            }
+            return window.localStorage.getItem("username")
         }
     }
 })

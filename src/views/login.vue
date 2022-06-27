@@ -54,6 +54,7 @@ export default {
               if (res.data.code === "000") {
                  //设置到store中
                  this.$store.commit("settoken",res.data.result.token);
+                 this.$store.commit("setusername",this.user.username);
                  this.$router.push({"name":"booklist",params:{
                       user:this.user
                    }});
